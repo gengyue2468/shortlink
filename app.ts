@@ -122,6 +122,8 @@ app.post("/", authorize, async (c) => {
   if (body.url === undefined || body.url === null || body.url === "")
     return c.text("Missing url", 400);
   if (!validUrl(body.url)) return c.text("Invalid url", 400);
+  if (new URL(body.url).origin === BASE_URL)
+    return c.json({ shortLink: body.url });
 
   let path: string;
   if (body.path !== undefined) {
