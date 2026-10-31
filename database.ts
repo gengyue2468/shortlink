@@ -31,13 +31,31 @@ const byUrl = db.query<Link, [string]>(
 const insert = db.query(
   "INSERT INTO links (short_link, original_url) VALUES (?, ?) ON CONFLICT(short_link) DO NOTHING",
 );
-const setUmamiId = db.query("UPDATE links SET umami_link_id = ? WHERE short_link = ? AND umami_link_id IS NULL");
+const setUmamiId = db.query("UPDATE links SET umami_link_id = ? WHERE short_link = ? AND original_url = ? AND umami_link_id IS NULL");
+const remove = db.query("DELETE FROM links WHERE short_link = ?");
+const removeMany = db.transaction((paths: string[]) => {
+  let deleted = 0;
+  for (const path of new Set(paths)) deleted += remove.run(path).changes;
+  return deleted;
+});
+const list = db.query<Link, [string, string, number, number]>(
+  "SELECT * FROM links WHERE instr(lower(short_link), lower(?)) > 0 OR instr(lower(original_url), lower(?)) > 0 ORDER BY rowid DESC LIMIT ? OFFSET ?",
+);
+const count = db.query<{ total: number }, [string, string]>(
+  "SELECT count(*) AS total FROM links WHERE instr(lower(short_link), lower(?)) > 0 OR instr(lower(original_url), lower(?)) > 0",
+);
 
 export const links = {
   findByPath: (path: string) => byPath.get(path),
   findByUrl: (url: string) => byUrl.get(url),
   create: (path: string, url: string) => insert.run(path, url).changes > 0,
-  setUmamiId: (path: string, id: string) => setUmamiId.run(id, path),
+  setUmamiId: (path: string, id: string, url: string) => setUmamiId.run(id, path, url),
+  delete: (path: string) => remove.run(path).changes > 0,
+  deleteMany: (paths: string[]) => removeMany(paths),
+  list: (search: string, limit: number, offset: number) => ({
+    items: list.all(search, search, limit, offset),
+    total: count.get(search, search)!.total,
+  }),
   createGenerated(url: string): string {
     const existing = byUrl.get(url);
     if (existing) return existing.short_link;

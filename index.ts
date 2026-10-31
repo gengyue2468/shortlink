@@ -11,10 +11,20 @@ const server = Bun.serve({
 
 console.log(`Running on ${Bun.env.BASE_URL ?? server.url}`);
 
+let stopping = false;
 async function shutdown() {
-	await server.stop();
-	await flushAnalytics();
-	process.exit(0);
+	if (stopping) return;
+	stopping = true;
+	// Bound graceful shutdown even with a stalled client or analytics request.
+	setTimeout(() => { void server.stop(true); process.exit(0); }, 5000).unref();
+	try {
+		await server.stop();
+		await flushAnalytics();
+		process.exit(0);
+	} catch (error) {
+		console.error("Shutdown failed:", error);
+		process.exit(1);
+	}
 }
 process.once("SIGINT", shutdown);
 process.once("SIGTERM", shutdown);

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>/admin</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3" integrity="sha384-aJ9rL4k6lF+91guGvUFVSkpIcge7Zd9EiI4TQDLoK9kFaFJgKHgjEXVvG/qA5COj" crossorigin="anonymous"></script>
+    <style>
+      :root {
+        color-scheme: light;
+        --background: #fff;
+        --foreground: #000;
+        --muted: #737373;
+        --border: #e5e5e5;
+        --hover: #fafafa;
+        --secondary: #f5f5f5;
+        --secondary-hover: #e5e5e5;
+        --primary: #3b82f6;
+        --primary-hover: #60a5fa;
+        --primary-foreground: #fff;
+        --link: #2563eb;
+        --accent: #eff6ff;
+        --accent-border: #bfdbfe;
+        --accent-hover: #dbeafe;
+        --danger: #ef4444;
+        --danger-background: #dc2626;
+        --danger-hover: #ef4444;
+        --danger-foreground: #fff;
+        --danger-border: #fecaca;
+        --danger-surface: #fef2f2;
+        --focus: var(--primary);
+        --font-family: "Schibsted Grotesk", sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --background: #0a0a0a;
+          --foreground: #f5f5f5;
+          --muted: #a3a3a3;
+          --border: #404040;
+          --hover: #171717;
+          --secondary: #262626;
+          --secondary-hover: #404040;
+          --link: #93c5fd;
+          --accent: #172554;
+          --accent-border: #1e40af;
+          --accent-hover: #1e3a8a;
+          --danger: #fca5a5;
+          --danger-border: #7f1d1d;
+          --danger-surface: #450a0a;
+        }
+      }
+      *,
+      ::before,
+      ::after {
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-family);
+      }
+      .field,
+      .button {
+        background: var(--background);
+        color: var(--foreground);
+        border-color: var(--border);
+      }
+      .field::placeholder,
+      .text-muted {
+        color: var(--muted);
+      }
+      .field:focus {
+        border-color: var(--focus);
+        outline: 2px solid var(--focus);
+        outline-offset: 0;
+      }
+      :where(button, a, input[type="checkbox"]):focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+      .button:hover:enabled {
+        background: var(--hover);
+      }
+      .button-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-color: var(--primary);
+      }
+      .button-primary:hover:enabled {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+      }
+      .button-secondary {
+        background: var(--secondary);
+      }
+      .button-secondary:hover:enabled,
+      .button-ghost:hover:enabled {
+        background: var(--secondary-hover);
+      }
+      .button-ghost {
+        color: var(--muted);
+      }
+      .button-accent {
+        color: var(--link);
+        border-color: var(--accent-border);
+      }
+      .button-accent:hover:enabled {
+        background: var(--accent-hover);
+      }
+      .button-danger {
+        background: var(--danger-background);
+        color: var(--danger-foreground);
+      }
+      .button-danger:hover:enabled {
+        background: var(--danger-hover);
+      }
+      .button-danger-outline {
+        color: var(--danger);
+        border-color: var(--danger-border);
+      }
+      .button-danger-outline:hover:enabled {
+        background: var(--danger-surface);
+      }
+      .text-danger {
+        color: var(--danger);
+      }
+      .link {
+        color: var(--link);
+      }
+      .result {
+        background: var(--accent);
+        border-color: var(--accent-border);
+      }
+      .divider {
+        border-color: var(--border);
+      }
+      input[type="checkbox"] {
+        accent-color: var(--primary);
+      }
+      ::selection {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+    </style>
+    <script src="/admin/app.js" defer></script>
+  </head>
+  <body>
+    <main id="login-panel" class="">
+      <form
+        id="login-form"
+        class="flex flex-col px-0 gap-1 justify-center min-h-dvh w-full max-w-xs mx-auto h-full"
+      >
+        <label for="key" class="text-sm font-medium block">API Key</label>
+        <input
+          id="key"
+          name="key"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="field w-full text-sm rounded-sm px-3 py-1 border"
+          aria-describedby="login-error"
+          placeholder="Enter your API key"
+        />
+
+        <button
+          type="submit"
+          class="button button-primary mt-3 w-full text-sm font-medium rounded-sm px-3 py-1 transition-colors cursor-pointer"
+        >
+          Sign in
+        </button>
+        <p
+          id="login-error"
+          role="status"
+          hidden
+          class="mt-1 font-medium text-danger text-sm"
+        ></p>
+      </form>
+    </main>
+
+    <main
+      id="workspace"
+      hidden
+      class="mx-auto max-w-3xl space-y-1 px-4 py-6 text-sm sm:px-6"
+    >
+      <div class="flex justify-end">
+        <button
+          id="logout"
+          type="button"
+          class="button button-ghost text-sm font-medium rounded-sm px-3 py-1 transition-colors cursor-pointer"
+        >
+          Sign out
+        </button>
+      </div>
+      <form
+        id="create-form"
+        class="grid gap-1 sm:grid-cols-[1fr_10rem_auto] sm:items-end"
+      >
+        <label class="flex min-w-0 flex-col gap-1 text-sm font-medium"
+          >URL<input
+            id="url"
+            name="url"
+            type="url"
+            required
+            placeholder="https://example.com"
+            class="field w-full text-sm font-normal rounded-sm px-3 py-1 border"
+        /></label>
+        <label class="flex min-w-0 flex-col gap-1 text-sm font-medium"
+          >Alias<input
+            id="path"
+            name="path"
+            pattern="[a-zA-Z0-9_\-]{1,64}"
+            maxlength="64"
+            placeholder="Optional"
+            class="field w-full text-sm font-normal rounded-sm px-3 py-1 border"
+        /></label>
+        <button
+          type="submit"
+          class="button button-primary text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer"
+        >
+          Create
+        </button>
+      </form>
+      <div
+        id="result"
+        hidden
+        class="result flex items-center justify-between gap-1 rounded-sm border px-3 py-1"
+      >
+        <a
+          id="result-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link min-w-0 break-all text-sm hover:underline"
+        ></a>
+        <button
+          id="copy-result"
+          type="button"
+          class="button button-accent shrink-0 text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer"
+        >
+          Copy
+        </button>
+      </div>
+      <p id="notice" role="status" hidden class="text-sm text-muted"></p>
+      <form id="search-form" role="search" class="flex gap-1">
+        <input
+          id="search"
+          type="search"
+          aria-label="Search links"
+          placeholder="Search"
+          maxlength="500"
+          class="field min-w-0 flex-1 text-sm rounded-sm px-3 py-1 border"
+        />
+        <button
+          type="submit"
+          class="button button-secondary text-sm font-medium rounded-sm px-3 py-1 transition-colors cursor-pointer"
+        >
+          Search
+        </button>
+      </form>
+      <div id="bulk-toolbar" class="flex flex-wrap items-center gap-1">
+        <label class="flex items-center gap-1 py-1"
+          ><input id="select-all" type="checkbox" disabled />Select page</label
+        >
+        <span
+          id="selected-count"
+          class="mr-auto text-sm text-muted"
+          aria-live="polite"
+          >0 selected</span
+        >
+        <button
+          id="copy-selected"
+          type="button"
+          disabled
+          class="button text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer disabled:cursor-default disabled:opacity-40"
+        >
+          Copy selected
+        </button>
+        <button
+          id="delete-selected"
+          type="button"
+          disabled
+          class="button button-danger text-sm font-medium rounded-sm px-3 py-1 transition-colors cursor-pointer disabled:cursor-default disabled:opacity-40"
+        >
+          Delete selected
+        </button>
+      </div>
+      <div id="links" aria-live="polite" class="text-sm text-muted"></div>
+      <nav
+        aria-label="Pagination"
+        class="flex items-center justify-between gap-1"
+      >
+        <button
+          id="previous"
+          type="button"
+          disabled
+          class="button text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer disabled:cursor-default disabled:opacity-40"
+        >
+          Previous
+        </button>
+        <span id="page" class="text-sm text-muted"></span>
+        <button
+          id="next"
+          type="button"
+          disabled
+          class="button text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer disabled:cursor-default disabled:opacity-40"
+        >
+          Next
+        </button>
+      </nav>
+    </main>
+
+    <template id="link-row">
+      <article class="divider border-b py-2 first:pt-0">
+        <div class="flex flex-wrap items-center justify-between gap-1">
+          <div class="flex min-w-0 items-center gap-1">
+            <input data-select type="checkbox" class="shrink-0" />
+            <a
+              data-link
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link min-w-0 break-all text-sm font-medium hover:underline"
+            ></a>
+          </div>
+          <div class="flex shrink-0 gap-1">
+            <button
+              data-copy
+              type="button"
+              class="button text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer"
+            >
+              Copy</button
+            ><button
+              data-delete
+              type="button"
+              class="button button-danger-outline text-sm font-medium rounded-sm px-3 py-1 border transition-colors cursor-pointer disabled:cursor-default disabled:opacity-40"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <p
+          data-url
+          class="mt-1 break-all text-sm font-normal leading-relaxed text-muted"
+        ></p>
+      </article>
+    </template>
+  </body>
+</html>

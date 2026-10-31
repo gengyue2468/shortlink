@@ -10,6 +10,7 @@ import {
 
 const enabled = Boolean(UMAMI_URL && UMAMI_API_KEY);
 const pending = new Set<Promise<void>>();
+const maxPending = 100;
 
 async function send(
   path: string,
@@ -39,12 +40,15 @@ export async function registerLink(
 ): Promise<string | null> {
   if (!enabled) return null;
   try {
+    const id = randomUUID();
     const response = await send(
       "/api/links",
       {
-        id: randomUUID(),
+        id,
         name: path,
-        slug: path,
+        // Native Umami slugs require at least 8 characters. A unique suffix
+        // also lets deleted aliases be recreated without reusing old stats.
+        slug: `${path}-${id.replaceAll("-", "")}`,
         url,
       },
       { Authorization: `Bearer ${UMAMI_API_KEY}` },
@@ -129,7 +133,8 @@ export function trackClick(
   request: Request,
   remoteAddress?: string,
 ): void {
-  if (!enabled || !id) return;
+  // Public redirects must not create unbounded outbound work during a burst.
+  if (!enabled || !id || pending.size >= maxPending) return;
   const task = reportClick(id, path, request, remoteAddress);
   pending.add(task);
   void task.finally(() => pending.delete(task));
